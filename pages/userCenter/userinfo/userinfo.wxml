@@ -1,0 +1,1 @@
+<navBar title='个人信息' home="{{true}}" back="{{true}}" background="#eee"></navBar>
