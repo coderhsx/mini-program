@@ -1,4 +1,5 @@
 // pages/login/login.js
+import http from "../../../assets/common/http.js";
 let app = getApp();
 Page({
 
@@ -59,29 +60,14 @@ Page({
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           if (_res.code) {
             let _this = this;
-            wx.request({
-              url: `${app.globalData.host}/service/miniprogram/jscode2session`,
-              method: "post",
-              data: {
-                code: _res.code,
-              },
-              success(res) {
-                if (res.data.code === 200) {
-                  res.data.result = res.data.result || {};
+            http.post(`${app.globalData.host}/service/miniprogram/jscode2session`,{
+              code: _res.code,
+            }).then((res)=>{
+              res.data.result = res.data.result || {};
                   app.globalData.memberAuthorization = res.data.result.memberAuthorization;
                   app.globalData.memberToken = res.data.result.memberToken;
                   resolve();
-                } else {
-                  wx.showToast({
-                    icon: "none",
-                    title: res.data.msg,
-                  });
-                }
-              },
-              fail(res) {
-                reject()
-              }
-            })
+            });
           } else {
             reject();
           }
@@ -148,18 +134,16 @@ Page({
 
   //根据路由参数跳转到不同页面
   navigate() {
-    let { navType, redirectUrl} = this.data.options;
-    navType = navType || "tab";
-    redirectUrl = redirectUrl || "/pages/tabBar/index/index";
-    if (navType === "tab") {
+    let pages =  getCurrentPages();
+    if(pages.length > 1){
+      wx.navigateBack({delta: 1});
+    }
+    else {
       wx.switchTab({
-        url: redirectUrl,
-      });
-    } else {
-      wx.redirectTo({
-        url: decodeURIComponent(redirectUrl),
+        url: '/pages/tabBar/index',
       })
     }
+    
   },
 
   /**

@@ -1,1 +1,0 @@
-<navBar title='登录中...' background="#eee" wx:if="isShow"></navBar>

@@ -1,6 +1,6 @@
 {
+  "entryPagePath": "pages/userCenter/login/login",
   "pages": [
-    "pages/tabBar/login/login",
     "pages/tabBar/index/index",
     "pages/tabBar/mine/mine"
   ],
@@ -8,7 +8,8 @@
     {
       "root": "pages/userCenter/",
       "pages": [
-        "userinfo/userinfo"
+        "userinfo/userinfo",
+        "login/login"
       ]
     }
   ],
@@ -17,8 +18,7 @@
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": true,
-    "navigationStyle": "custom"
+    "enablePullDownRefresh": true
   },
   "tabBar": {
     "color": "#7A7E83",
@@ -41,8 +41,8 @@
     ]
   },
   "style": "v2",
-  "usingComponents": {
-    "navBar": "/pages/components/navbar/navBar"
-  },
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "networkTimeout":{
+    "request": 5000
+  }
 }

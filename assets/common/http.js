@@ -1,9 +1,8 @@
 const app = getApp();
-let reqCount = 0;
-const request = (url, options, extraOption) => {
-  let msg = '加载中';
+let reqCount = 0;//唯一“加载中”标识，避免同一页面多个请求时，“加载中”闪烁问题
+const request = (url, options, extraOption = {msg:"加载中"}) => {
   wx.showLoading({
-    title: msg,
+    title: extraOption.msg,
   });
   reqCount++;
   return new Promise((resolve, reject) => {
@@ -19,41 +18,19 @@ const request = (url, options, extraOption) => {
         if (request.statusCode == 200) {
           if (request.data.code === 200) {
             resolve(request.data)
-          } else if (request.data.code === 401){//未登录
-            //采用将当前路由作为参数传递到登录页而不直接跳转到登录页
-            //避免保存当前页面路由。解决点击返回时，返回到当前页面的BUG
-            let currentPage = getCurrentPages().pop();
-            let navType = "nav";
-            let params = "?";
-            let options = currentPage.options;
-            let tabList = [
-              "pages/tabBar/index/index",
-              "pages/tabBar/mine/mine"
-            ];
-            if (tabList.indexOf(currentPage.route) > -1){
-              navType = "tab";
-            }
-            params += Object.keys(options).map((key) => key + "=" + options[key]).join("&");
+          } else if (request.data.code === 401) { //未登录
             wx.redirectTo({
-              url: `/pages/tabBar/login/login?navType=${navType}&redirectUrl=/${encodeURIComponent(currentPage.route + params)}`,
+              url: `/pages/tabBar/login/login`,
             })
           } else {
-            if (showToast) {
-              setTimeout(() => {
-                wx.showToast({
-                  title: (request.data || {}).msg || "",
-                  icon: 'none',
-                  duration: 3000,
-                  mask: true
-                })
-              }, 500)
-            }
+            wx.showToast({
+              title: (request.data || {}).msg || "",
+              icon: 'none',
+              duration: 3000,
+              mask: true
+            })
             reject(request.data);
           }
-        } else if (request.statusCode == 401) {
-          // wx.navigateTo({
-          //   url: '/pages/authorize/authorize',
-          // });
         } else {
           wx.showToast({
             title: "请求出错",
@@ -65,6 +42,12 @@ const request = (url, options, extraOption) => {
         }
       },
       fail(error) {
+        wx.showToast({
+          title: "请求超时",
+          icon: 'none',
+          duration: 3000,
+          mask: true
+        });
         reject(error.data);
       },
       complete() {

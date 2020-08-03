@@ -1,2 +1,1 @@
-<navBar title='首页' background="#fff"></navBar>
-<navigator url="/pages/userCenter/userinfo/userinfo">个人信息</navigator>
+<c-button class="c-class" bindtap="click" loading="{{button.loading}}" text="{{button.text}}" ></c-button>

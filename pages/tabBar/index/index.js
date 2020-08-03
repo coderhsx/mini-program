@@ -6,19 +6,28 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    button:{
+      loading: false,
+      text: "按钮1"
+    }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.getStatus();
+    // this.getStatus();
   },
 
   getStatus(){
     http.get('/subscribe/unread/count').then(res => {
     });
+  },
+
+  click(){
+    if(this.data.button.loading){ return;}
+    this.setData({ ["button.loading"]: true});
+    setTimeout(()=>{this.setData({ ["button.loading"]: false});},3000);
   },
 
   /**
